@@ -1,8 +1,12 @@
 <?php
-$bdd = new PDO('mysql:host=localhost;dbname=mon_armoire;charset=utf8','root','SIMPLONCO');
-$response = $bdd->query("SELECT * FROM mes_chaussettes;");
-$req = $bdd->prepare('SELECT couleur , pointure FROM mes_chaussettes WHERE couleur = ? AND pointure = ?');
-$req->execute(array($_GET['couleur'], $_GET['pointure']));
+require 'vendor/j4mie/idiorm/idiorm.php';
+
+ORM::configure('mysql:host=localhost;dbname=mon_armoire');
+ORM::configure('username', 'root');
+ORM::configure('password', 'SIMPLONCO');
+
+$id = ORM::for_table('mes_chaussettes')->where('id')->find_many();
+$donnees = ORM::for_table('mes_chaussettes')->find_many();
 ?>
 
 <!DOCTYPE html>
@@ -17,16 +21,13 @@ $req->execute(array($_GET['couleur'], $_GET['pointure']));
 
 	<table class="ui table">
 
-		<?php while($donnees = $req->fetch()):?>
+		<?php foreach($donnees as $id):?>
 
 			<tr>
-
-				<td><?php echo $donnees['couleur'];?></td>
-				<td><?php echo $donnees['pointure'];?></td>
-
+				<td><?php echo $id['id'];?></td>
 			</tr>
 
-		<?php endwhile;?>
+		<?php endforeach;?>
 
 	</table>
 
